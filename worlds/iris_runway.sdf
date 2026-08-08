@@ -120,5 +120,11 @@
       <pose degrees="true">0 0 0.195 0 0 90</pose>
     </include>
 
+    <include>
+      <name>white_mannequin</name>
+      <pose>5 3 0 0 0 0</pose>
+      <uri>model://white_mannequin</uri>
+    </include>
+
   </world>
 </sdf>
