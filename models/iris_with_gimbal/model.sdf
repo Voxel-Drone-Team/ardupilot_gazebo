@@ -23,6 +23,100 @@
       </axis>
     </joint>
 
+    <!-- Stereo pairs, mounted below the hull so the props and legs stay out
+         of each 90 degree field of view. -->
+    <include>
+      <uri>model://stereo_camera_ifwater</uri>
+      <name>stereo_front</name>
+      <experimental:params>
+        <sensor element_id="base_link::left" action="modify">
+          <gz_frame_id>stereo_front_left_optical</gz_frame_id>
+        </sensor>
+        <sensor element_id="base_link::right" action="modify">
+          <gz_frame_id>stereo_front_right_optical</gz_frame_id>
+        </sensor>
+      </experimental:params>
+      <pose degrees="true">0.155 0 -0.06 0 0 0</pose>
+    </include>
+    <joint name="stereo_front_joint" type="fixed">
+      <parent>iris_with_standoffs::base_link</parent>
+      <child>stereo_front::base_link</child>
+    </joint>
+
+    <include>
+      <uri>model://stereo_camera_ifwater</uri>
+      <name>stereo_back</name>
+      <experimental:params>
+        <sensor element_id="base_link::left" action="modify">
+          <gz_frame_id>stereo_back_left_optical</gz_frame_id>
+        </sensor>
+        <sensor element_id="base_link::right" action="modify">
+          <gz_frame_id>stereo_back_right_optical</gz_frame_id>
+        </sensor>
+      </experimental:params>
+      <pose degrees="true">-0.170 0 -0.06 0 0 180</pose>
+    </include>
+    <joint name="stereo_back_joint" type="fixed">
+      <parent>iris_with_standoffs::base_link</parent>
+      <child>stereo_back::base_link</child>
+    </joint>
+
+    <include>
+      <uri>model://stereo_camera_ifwater</uri>
+      <name>stereo_left</name>
+      <experimental:params>
+        <sensor element_id="base_link::left" action="modify">
+          <gz_frame_id>stereo_left_left_optical</gz_frame_id>
+        </sensor>
+        <sensor element_id="base_link::right" action="modify">
+          <gz_frame_id>stereo_left_right_optical</gz_frame_id>
+        </sensor>
+      </experimental:params>
+      <pose degrees="true">0 0.105 -0.06 0 0 90</pose>
+    </include>
+    <joint name="stereo_left_joint" type="fixed">
+      <parent>iris_with_standoffs::base_link</parent>
+      <child>stereo_left::base_link</child>
+    </joint>
+
+    <include>
+      <uri>model://stereo_camera_ifwater</uri>
+      <name>stereo_right</name>
+      <experimental:params>
+        <sensor element_id="base_link::left" action="modify">
+          <gz_frame_id>stereo_right_left_optical</gz_frame_id>
+        </sensor>
+        <sensor element_id="base_link::right" action="modify">
+          <gz_frame_id>stereo_right_right_optical</gz_frame_id>
+        </sensor>
+      </experimental:params>
+      <pose degrees="true">0 -0.105 -0.06 0 0 -90</pose>
+    </include>
+    <joint name="stereo_right_joint" type="fixed">
+      <parent>iris_with_standoffs::base_link</parent>
+      <child>stereo_right::base_link</child>
+    </joint>
+
+    <!-- Pitched to look straight down, with the baseline across the body.
+         Behind the gimbal, which would otherwise fill the front of the view. -->
+    <include>
+      <uri>model://stereo_camera_ifwater</uri>
+      <name>stereo_down</name>
+      <experimental:params>
+        <sensor element_id="base_link::left" action="modify">
+          <gz_frame_id>stereo_down_left_optical</gz_frame_id>
+        </sensor>
+        <sensor element_id="base_link::right" action="modify">
+          <gz_frame_id>stereo_down_right_optical</gz_frame_id>
+        </sensor>
+      </experimental:params>
+      <pose degrees="true">-0.11 0 -0.07 0 90 0</pose>
+    </include>
+    <joint name="stereo_down_joint" type="fixed">
+      <parent>iris_with_standoffs::base_link</parent>
+      <child>stereo_down::base_link</child>
+    </joint>
+
     <!-- plugins -->
     <plugin filename="gz-sim-joint-state-publisher-system"
       name="gz::sim::systems::JointStatePublisher">

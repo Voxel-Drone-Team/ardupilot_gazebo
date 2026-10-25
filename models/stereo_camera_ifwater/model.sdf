@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <!--
+    IFWATER 1200P global shutter stereo USB camera (Amazon B0DBQDZQCK).
+
+    Datasheet: 3200x1200 side-by-side MJPEG at 60 fps, i.e. two synchronised
+    1600x1200 global shutter sensors, 90 degree HFOV with no distortion,
+    80 x 16.5 mm board. The listing does not give the lens spacing: the
+    baseline below assumes the usual 60 mm for this board size, so change the
+    sensor <pose> y values if the unit in hand differs.
+
+    Simulation cost is per frame, and Gazebo blocks physics on every render:
+    with all four pairs on the drone streaming, 10 Hz keeps the simulation
+    near real time where the camera's 60 fps would not. L8 (mono) is
+    converted on the CPU and costs three times R8G8B8, so stay in colour.
+
+    The model frame looks along +X with +Z up; the left sensor sits at +Y.
+
+    Images carry the sensor's scoped name as frame_id unless the including
+    model sets <gz_frame_id> per sensor, which iris_with_gimbal does so that
+    each mount reports its own optical frame.
+  -->
+  <model name="stereo_camera_ifwater">
+    <link name="base_link">
+      <inertial>
+        <mass>0.025</mass>
+        <inertia>
+          <ixx>1.4e-05</ixx>
+          <iyy>1.0e-06</iyy>
+          <izz>1.4e-05</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+
+      <visual name="board">
+        <geometry>
+          <box>
+            <size>0.012 0.080 0.0165</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.05 0.05 0.05 1</ambient>
+          <diffuse>0.1 0.1 0.1 1</diffuse>
+          <specular>0.2 0.2 0.2 1</specular>
+        </material>
+      </visual>
+      <visual name="left_lens">
+        <pose degrees="true">0.009 0.030 0 0 90 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.006</radius>
+            <length>0.006</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+          <specular>0.6 0.6 0.6 1</specular>
+        </material>
+      </visual>
+      <visual name="right_lens">
+        <pose degrees="true">0.009 -0.030 0 0 90 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.006</radius>
+            <length>0.006</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+          <specular>0.6 0.6 0.6 1</specular>
+        </material>
+      </visual>
+
+      <!-- Sensors sit in front of the lens visuals so they do not image them. -->
+      <sensor name="left" type="camera">
+        <gz_frame_id>stereo_left_optical</gz_frame_id>
+        <pose>0.013 0.030 0 0 0 0</pose>
+        <camera name="left">
+          <horizontal_fov>1.5708</horizontal_fov>
+          <image>
+            <width>800</width>
+            <height>600</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>500</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.005</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>10</update_rate>
+        <visualize>0</visualize>
+      </sensor>
+      <sensor name="right" type="camera">
+        <gz_frame_id>stereo_right_optical</gz_frame_id>
+        <pose>0.013 -0.030 0 0 0 0</pose>
+        <camera name="right">
+          <horizontal_fov>1.5708</horizontal_fov>
+          <image>
+            <width>800</width>
+            <height>600</height>
+            <format>R8G8B8</format>
+          </image>
+          <!-- Stereo consumers read the baseline from the right camera_info's
+               P[3] = -fx * baseline. fx, cx and cy also drive rendering, so they
+               must stay what 800 px across a 90 degree HFOV gives. -->
+          <lens>
+            <projection>
+              <p_fx>400</p_fx>
+              <p_fy>400</p_fy>
+              <p_cx>400</p_cx>
+              <p_cy>300</p_cy>
+              <tx>-24</tx>
+              <ty>0</ty>
+            </projection>
+          </lens>
+          <clip>
+            <near>0.02</near>
+            <far>500</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.005</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>10</update_rate>
+        <visualize>0</visualize>
+      </sensor>
+    </link>
+  </model>
+</sdf>
